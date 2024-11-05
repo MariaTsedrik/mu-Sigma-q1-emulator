@@ -1,6 +1,6 @@
-# $\mu$-$\Sigma$ Emulator with Screening
+# $\mu$-$ \Sigma $ Emulator with Screening
 
-Emulated $\mu$-$\Sigma$ non-linear and linear power
+Emulated $\mu$-$ \Sigma $ non-linear and linear power
 spectra for fast weak lensing analysis.
 
 The cosmosis-folder contains the required module for power spectrum computation, as well as examplary ini-files.
