@@ -10,7 +10,7 @@ import HMcode2020Emu as hmcodeemu #version 3 of the emulator from github https:/
 
 from scipy.integrate import trapz,simpson, quad
 emulator_nonlin = cp.cosmopower_NN(restore=True,
-                        restore_filename='/home/mtsedrik/cosmosis-standard-library/structure/muSigma_emu/models/MuSigma_nonlinear_log10ps',
+                        restore_filename='/home/mtsedrik/cosmosis-standard-library/structure/muSigma_emu/models/MuSigma_nonlinear_log10ps_v2',
                         )
 emu_k_nonlin = emulator_nonlin.modes
 emulator_lin = cp.cosmopower_NN(restore=True,
