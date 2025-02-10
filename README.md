@@ -19,7 +19,7 @@ Required python packages:
 | omega_cdm         | [0.2, 0.6]            |
 | omega_baryon      | [0.03, 0.07]          |
 | hubble            | [0.58, 0.8]           |
-| As                | [1.5e-9, 2.5e-9]      |
+| As                | [0.5e-9, 5e-9]      |
 | ns                | [0.93, 1.]            |
 | neutrino_mass [eV]| [0., 0.6]             |
 | mu0               | [-1., 3.]             |

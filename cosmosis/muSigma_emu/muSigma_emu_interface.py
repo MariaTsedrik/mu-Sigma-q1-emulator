@@ -9,12 +9,12 @@ import HMcode2020Emu as hmcodeemu #version 3 of the emulator from github https:/
 
 
 from scipy.integrate import trapz,simpson, quad
-emulator_nonlin = cp.cosmopower_NN(restore=True,
-                        restore_filename='/home/mtsedrik/cosmosis-standard-library/structure/muSigma_emu/models/MuSigma_nonlinear_log10ps_v2',
+emulator_nonlin_boost = cp.cosmopower_NN(restore=True,
+                        restore_filename='/home/mtsedrik/cosmosis-standard-library/structure/muSigma_emu/models/MuSigma_nonlinearboost_extAs',
                         )
-emu_k_nonlin = emulator_nonlin.modes
+emu_k_nonlin = emulator_nonlin_boost.modes
 emulator_lin = cp.cosmopower_NN(restore=True,
-                        restore_filename='/home/mtsedrik/cosmosis-standard-library/structure/muSigma_emu/models/MuSigma_linear_log10ps',
+                        restore_filename='/home/mtsedrik/cosmosis-standard-library/structure/muSigma_emu/models/MuSigma_linear_log10ps_extAs',
                         )
 emu_k_lin = emulator_lin.modes
 print("Loaded nonlinear mu0-Sigma0 model")
@@ -89,7 +89,7 @@ def check_params(params):
             #'H0': [58., 80.],
             'h': [0.58, 0.8],
             'ns': [0.93, 1.0],
-            'As': [1.5e-09, 2.5e-09],
+            'As': [0.5e-09, 5.0e-09],
             'neutrino_mass': [0., 0.6],
             'mu0': [-0.9999, 2.9999],
             'sigma0': [-1., 3.],
@@ -151,7 +151,7 @@ def emulate_power(block, config):
     #zmask = z < 2.5
     #kmask = (k < 5.) & (k > 0.01)
 
-    Pk_nl = emulator_nonlin.ten_to_predictions_np(params)
+    Bk_nl = emulator_nonlin_boost.predictions_np(params)
     Pk_l = emulator_lin.ten_to_predictions_np(params)
 
 
@@ -163,13 +163,13 @@ def emulate_power(block, config):
                                             ) for pk_lin_i in Pk_l]
     plin = np.array([pklin_interp[i](k_arr) for i in range(nz)])
 
-    pknonlin_interp = [interpolate.interp1d(emu_k_nonlin,
-                                                    pk_nonlin_i,
+    bknonlin_interp = [interpolate.interp1d(emu_k_nonlin,
+                                                    bk_nonlin_i,
                                                     kind='linear',bounds_error=False,
-                                                    fill_value=(pk_nonlin_i[0], pk_nonlin_i[-1]) 
-                                                    ) for pk_nonlin_i in Pk_nl]
-    pnonlin = np.array([pknonlin_interp[i](k_arr[k_arr>=0.01]) for i in range(nz)])
-
+                                                    fill_value=(bk_nonlin_i[0], bk_nonlin_i[-1]) 
+                                                    ) for bk_nonlin_i in Bk_nl]
+    boostnonlin = np.array([bknonlin_interp[i](k_arr[k_arr>=0.01]) for i in range(nz)])
+    pnonlin = plin[:, k_arr>=0.01]*boostnonlin
     
     # concatenation of PkLin, Pk_NL
     pl_left = plin[:, k_arr<emu_k_nonlin[0]]
